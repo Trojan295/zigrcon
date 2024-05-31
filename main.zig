@@ -72,7 +72,7 @@ fn authenticate(allocator: std.mem.Allocator, stream: net.Stream, password: []co
 
     _ = try stream.write(packet_data);
 
-    const resp_pkt = try Packet.from_bytes(allocator, stream);
+    const resp_pkt = try Packet.from_stream(allocator, stream);
     defer resp_pkt.deinit();
 
     if (req_pkt.id != resp_pkt.id) {
@@ -88,7 +88,7 @@ fn send_command(allocator: std.mem.Allocator, stream: net.Stream, command: []con
 
     _ = try stream.write(req_bytes);
 
-    return try Packet.from_bytes(allocator, stream);
+    return try Packet.from_stream(allocator, stream);
 }
 
 const Packet = struct {
@@ -111,7 +111,7 @@ const Packet = struct {
         };
     }
 
-    pub fn from_bytes(alloc: std.mem.Allocator, stream: net.Stream) !Packet {
+    pub fn from_stream(alloc: std.mem.Allocator, stream: net.Stream) !Packet {
         var int_buf: [4]u8 = undefined;
         var pkt_buf: [4092]u8 = undefined;
 
